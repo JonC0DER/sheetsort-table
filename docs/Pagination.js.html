@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Pagination.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Pagination.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { SearchBar } from './SearchBar'
+import React, { useState } from 'react'
+import { Table } from './Table'
+import PropTypes from 'prop-types'
+
+/**
+ * help to display all the data in few pages for a best vue
+ * got 2 type of data 
+ * @component
+ * @param {Object} thData the titles needed for the table
+ * @param {Array} tdData all the datas we have
+ * @example
+ * thData = {
+ *  key: string,
+ *  ...
+ * } 
+ * tdData = [
+ *  {key: string}
+ *  ...
+ * ]
+ * @returns {component} 
+ */
+export const Pagination = (props) => {
+    const tdData = props.pullData
+    const numberOfLines = [5, 10, 15, 30, 50, 100]
+
+    /**
+     * store the number of rows needed in the current page
+     */
+    const [nbRows, setNbRows] = useState(5)
+    /**
+     * update &amp; store the end indexes for each current pages []
+     */
+    const [endElem, setEndElem] = useState(5)
+    /**
+     * update &amp; store the start indexes for each current pages []
+     */
+    const [startElem, setStartElem] = useState(0)
+    /**
+     * update the number of page to allow us knowing 
+     * what number is the current page
+     */
+    const [currentPage, setCurrentPage] = useState(1)
+    /**
+     * store user searching value
+     */
+    const [searchState, setSearchState] = useState('')
+    /**
+     * return TRUE if user is using the search else FALSE
+     */
+    const [searchBool, setSearchBool] = useState(false)
+    /**
+     * store user search results
+     */
+    const [tdDataState, setTdDataState] = useState(tdData)
+
+    /**
+     * calculs that return the number of pages that we need
+     */
+    const nbPages = Math.ceil(tdData.length / nbRows)
+    /**
+     * store the data lenght in a variable... more efficiant
+     */
+    const dataLen = tdData.length
+    /**
+     * get the start &amp; end indexes needed to set the
+     * datas gonna display in the current page
+     */
+    const currentPageData = tdData.slice(startElem, endElem)
+    //const firstPage = () => tdData.slice(0, nbRows)
+    //const lastPage = tdData.slice((nbPages * nbRows) - nbRows)
+
+    /**
+     * @param {element} e of the select number of rows &lt;br/>
+     * 1 - set the number of row &lt;br/>
+     * 2 - set the start &amp; end indexes that update the current page data &lt;br/>
+     * 3 - update &amp; set the first page &lt;br/>
+     * 4 - set the search boolean to false &lt;br/>
+     */
+    const onSetNumberOfRows = (e) => {
+        const nbLines = Number(e.target.value)
+        setNbRows(nbLines)
+        setStartElem(0)
+        setEndElem(nbLines)
+        setCurrentPage(1)
+        setSearchBool(false)
+    }
+
+    /**
+     * &lt;function description>
+     * 1 - set the user search value to searchState &lt;br>
+     * 2 - parse the dataset &amp; set it to tdDataState &lt;br>
+     * 3 - if user search value is empty then set FALSE to searchBool &lt;br>
+     * else set TRUE to it
+     * @param {element} e.target we store the value &amp; parse the dataset
+     */
+    const onSearchSomething = (e) => {
+        const searchValue = e.target.value
+        setSearchState(searchValue)
+        const searchRetreiveData = JSON.parse(e.target.dataset['retreivesearch'])
+        setTdDataState(searchRetreiveData)
+        if (searchValue === '') {
+            setSearchBool(false)
+        } else {
+            setSearchBool(true)
+        }
+    }
+
+    /**
+     * 1 - update start &amp; end indexes to update the current page
+     * 2 - decrement the current page number
+     */
+    const previousPage = () => {
+        if (startElem - nbRows >= 0) {
+            setStartElem(startElem - nbRows)
+            setEndElem(endElem - nbRows)
+            setCurrentPage(currentPage - 1)
+        }
+    }
+
+    /**
+     * 1 - update start &amp; end indexes to update the current page
+     * 2 - increment the current page number
+     */
+    const nextPage = () => {
+        if (endElem + nbRows &lt;= (dataLen + nbRows)) {
+            setStartElem(startElem + nbRows)
+            setEndElem(endElem + nbRows)
+            setCurrentPage(currentPage + 1)
+        }
+    }
+
+    /**
+     * if user is searching somthing or if it's the first page : &lt;br/>
+     *      then we disable the previous button
+     */
+    const disablePrev = searchBool ? true : currentPage === 1 ? true : false
+    /**
+     * if user is searching somthing or if it's the last page : &lt;br/>
+     *      then we disable the next button
+     */
+    const disableNext = searchBool ? true : currentPage === nbPages ? true : false
+
+    return (
+        &lt;>
+            &lt;div className="table-filter" >
+                &lt;div className="select-number" >
+                    &lt;span>Show&lt;/span>&amp;nbsp;
+                    &lt;select
+                        onChange={onSetNumberOfRows}
+                        name="select-numnber-rows" id="select-number-rows"
+                    >
+                        {numberOfLines.map((nb, key) =>
+                            &lt;option key={key} value={`${nb}`}> {nb}&lt;/option>
+                        )}
+                    &lt;/select>
+                    &amp;nbsp;&lt;span>Entries&lt;/span>
+                &lt;/div>
+                &lt;SearchBar
+                    value={searchState} tdData={tdData} onChange={onSearchSomething}
+                />
+            &lt;/div>
+            &lt;Table thData={props.thData} tdData={tdData} searchBool={searchBool}
+                currentPageData={currentPageData} tdDataState={tdDataState}
+            />
+            &lt;div className="table-footer">
+                &lt;p>Showing {startElem} to {endElem} of {dataLen} entries&lt;/p>
+                &lt;div className="pagination">
+                    &lt;button
+                        onClick={previousPage} disabled={disablePrev}
+                        className="previous-btn"
+                    >Previous&lt;/button>
+                    &lt;div className="current-page">{currentPage}&lt;/div>
+                    &lt;button
+                        onClick={nextPage} disabled={disableNext}
+                        className='next-btn'
+                    >Next&lt;/button>
+                &lt;/div>
+            &lt;/div>
+        &lt;/>
+    )
+}
+
+Pagination.propTypes = {
+    /**
+     *  &lt;th> title &lt;th> 
+     *  ...
+     */
+    thData: PropTypes.objectOf(
+        PropTypes.string
+    ),
+    /**
+     * data array []
+     */
+    tdData: PropTypes.arrayOf(
+        /**
+         * data object {}
+         */
+        PropTypes.objectOf(
+            /**
+             *  &lt;td> data &lt;/td> 
+             *  ...
+             */
+            PropTypes.string
+        )
+    )
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="DataTable.html">DataTable</a></li><li><a href="Pagination.html">Pagination</a></li><li><a href="SearchBar.html">SearchBar</a></li><li><a href="Table.html">Table</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Fri Jan 27 2023 15:33:28 GMT+0100 (heure normale d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
