@@ -1,0 +1,31 @@
+{
+  "name": "sheetsort-table",
+  "version": "1.0.10",
+  "description": "a table sheet tools to sort your datas",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npx babel src --out-dir dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JonC0DER/sheetsort-table"
+  },
+  "keywords": [
+    "sorting",
+    "table",
+    "sheet"
+  ],
+  "author": "joncoder",
+  "license": "MIT",
+  "dependencies": {
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.20.7",
+    "@babel/core": "^7.20.12",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-react": "^7.18.6"
+  }
+}
