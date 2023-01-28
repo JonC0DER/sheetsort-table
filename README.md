@@ -1,4 +1,4 @@
-# data-sheetable-joncoder
+# SheetSort-Table
 
 ## DataTable
 
@@ -29,7 +29,7 @@ dataTitle = "App title"
 ### How to use it
 
 ```react
-import DataTable from "data-sheet-joncoder"
+import DataTable from "sheetsort-table/dist/datatable/DataTable"
 
 const MyComponent = () => {
     const headTable = {
