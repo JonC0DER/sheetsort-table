@@ -1,6 +1,6 @@
 {
   "name": "sheetsort-table",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "a table sheet tools to sort your datas",
   "main": "dist/index.js",
   "scripts": {
