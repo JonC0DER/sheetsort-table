@@ -170,7 +170,7 @@ export const Pagination = (props) => {
                         onClick={previousPage} disabled={disablePrev}
                         className="previous-btn"
                     >Previous</button>
-                    <div className="current-page">{currentPage}</div>
+                    <div className="current-page">{currentPage} / {nbPages}</div>
                     <button
                         onClick={nextPage} disabled={disableNext}
                         className='next-btn'

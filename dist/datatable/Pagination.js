@@ -209,7 +209,7 @@ var Pagination = function Pagination(props) {
     className: "previous-btn"
   }, "Previous"), /*#__PURE__*/_react["default"].createElement("div", {
     className: "current-page"
-  }, currentPage), /*#__PURE__*/_react["default"].createElement("button", {
+  }, currentPage, " / ", nbPages), /*#__PURE__*/_react["default"].createElement("button", {
     onClick: nextPage,
     disabled: disableNext,
     className: "next-btn"
